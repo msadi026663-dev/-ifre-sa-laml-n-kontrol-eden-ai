@@ -1,0 +1,60 @@
+def sifre_kontrol(sifre):
+    hatalar = []
+    
+    # Temel uzunluk kontrolü (güncel standart)
+    if len(sifre) < 12:
+        hatalar.append(f"❌ Çok kısa ({len(sifre)} karakter) → En az 12 olmalı, ideal 16+")
+    
+    # Büyük-küçük-rakam-özel karakter kontrolleri
+    if not any(h.isupper() for h in sifre):
+        hatalar.append("❌ Büyük harf yok (A-Z)")
+    
+    if not any(h.islower() for h in sifre):
+        hatalar.append("❌ Küçük harf yok (a-z)")
+    
+    if not any(h.isdigit() for h in sifre):
+        hatalar.append("❌ Rakam yok (0-9)")
+    
+    # Özel karakter kontrolü (daha geniş set)
+    ozel_set = set("!@#$%^&*()_+-=[]{}|;:'\",.<>?/`~")
+    if not any(h in ozel_set for h in sifre):
+        hatalar.append("❌ Özel karakter yok (! @ # $ % ^ & * gibi)")
+    
+    # Basit ve yasak pattern'ler
+    basitler = {
+        "123456", "12345678", "123456789", "password", "qwerty", "abc123",
+        "111111", "000000", "admin", "letmein", "welcome", "mehmet", "sadi",
+        "123qwe", "qazwsx"
+    }
+    if sifre.lower() in basitler or sifre.isdigit() or sifre.lower().isalpha():
+        hatalar.append("❌ Bu şifre çok basit / herkesin bildiği türden")
+    
+    # Yan yana aynı karakter çokluğu (aaaa, 11111 gibi)
+    for i in range(len(sifre) - 3):
+        if sifre[i] == sifre[i+1] == sifre[i+2] == sifre[i+3]:
+            hatalar.append("❌ Aynı karakter 4+ kez yan yana → Zayıflatır")
+            break
+    
+    # Sonuç ekranı – senin orijinal mantık gibi her şeyi tek tek söylüyor
+    if not hatalar:
+        print("✅ Şifre gayet güçlü! Artık bunu gönül rahatlığıyla kullanabilirsin 🔥")
+    else:
+        print("⚠️ Şifrede sorunlar var! Bakalım neler eksik:")
+        for hata in hatalar:
+            print("   " + hata)
+        print("\n💡 Hepsini düzeltirsen çok daha güvenli olur!")
+
+    # Bonus: basit bir güç seviyesi
+    if len(hatalar) == 0:
+        print("Güç seviyesi: 💪💪💪 (Çok güçlü)")
+    elif len(hatalar) <= 2:
+        print("Güç seviyesi: 💪💪 (İyi ama geliştirilebilir)")
+    else:
+        print("Güç seviyesi: 💪 (Zayıf – lütfen düzelt)")
+
+
+# Kullanım – senin gibi basit
+print("🔐 Şifre Gücü Kontrolü (Mehmet Sadi Edition v2)")
+sifre = input("\nŞifreni gir: ")
+print("-" * 40)
+sifre_kontrol(sifre)
